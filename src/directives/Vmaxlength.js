@@ -1,10 +1,3 @@
-import Vue from "vue";
-import App from "./App.vue";
-import store from "./store";
-import vuetify from "./plugins/vuetify";
-Vue.config.productionTip = false;
-
-const handlers = new Map();
 function updateHandler(el, binding) {
   el.removeEventListener("input", handlers.get(el));
 
@@ -21,17 +14,3 @@ function updateHandler(el, binding) {
 
   el.addEventListener("input", handler);
 }
-Vue.directive("maxlen", {
-  bind: updateHandler,
-  update: updateHandler,
-  unbind(el) {
-    el.removeEventListener("input", handlers.get(el));
-    handlers.delete(el);
-  },
-});
-
-new Vue({
-  store,
-  vuetify,
-  render: (h) => h(App),
-}).$mount("#app");
