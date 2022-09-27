@@ -9,7 +9,7 @@
       type="number"
       @keypress="filterWithoutE"
     ></v-text-field>
-    <div>1 USD = 17.7755 ZAR</div>
+    <div class="mt-8">1 USD = 17.7755 ZAR</div>
   </div>
 </template>
 
