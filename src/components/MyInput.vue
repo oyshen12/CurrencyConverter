@@ -1,8 +1,7 @@
 <template>
   <div class="my-input">
     <v-text-field
-      @input="updateInput"
-      :value="inputValue"
+      v-model="inputValue"
       single-line
       dense
       height="57"
@@ -13,7 +12,9 @@
     <div class="mt-8">
       1 {{ availableCurrency.CharCode }} =
       {{
-        calculationCourse(1, wantBuyCurrencies, availableCurrency).toFixed(4)
+        readbleNumber(
+          calculationCourse(1, wantBuyCurrencies, availableCurrency)
+        )
       }}
       {{ wantBuyCurrencies.CharCode }}
     </div>
@@ -39,10 +40,8 @@ export default {
         return true;
       }
     },
-    updateInput(val) {
-      this.changeAvailableCurrency({
-        inputValue: val,
-      });
+    readbleNumber(num) {
+      return Number.isInteger(num) ? num : num.toFixed(4);
     },
     calculationCourse(
       num,
@@ -62,8 +61,20 @@ export default {
         Number.parseFloat(correctNumber) -
           Number.parseFloat(this.inputValue === "" ? 0 : this.inputValue)
       );
-      if (expression > 0.0005) {
-        this.inputValue = correctNumber !== 0 ? correctNumber : "";
+      if (expression > 0.005) {
+        this.inputValue =
+          correctNumber !== 0 ? this.readbleNumber(correctNumber) : "";
+      }
+    },
+    inputValue(newVal) {
+      if (newVal.length > 9) {
+        this.$nextTick(() => {
+          this.inputValue = this.inputValue.slice(0, 9);
+        });
+      } else {
+        this.changeAvailableCurrency({
+          inputValue: newVal,
+        });
       }
     },
   },
