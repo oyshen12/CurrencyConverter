@@ -1,17 +1,27 @@
 <template>
   <v-tooltip top>
     <template v-slot:activator="{ on, attrs }">
-      <v-btn depressed color="white" v-bind="attrs" v-on="on" class="py-3">
-        <slot></slot>
+      <v-btn
+        depressed
+        color="white"
+        :class="{
+          active: active,
+        }"
+        v-bind="attrs"
+        v-on="on"
+        class="py-3"
+        @click="changeAvailableCurrency(currency)"
+      >
+        {{ currency.CharCode }}
       </v-btn>
     </template>
-    <span>{{ nameCurrency }}</span>
+    <span>{{ currency.Name }}</span>
   </v-tooltip>
 </template>
 
 <script>
 export default {
-  props: ["nameCurrency"],
+  props: ["currency", "active", "changeAvailableCurrency"],
   data() {
     return {};
   },
@@ -24,5 +34,9 @@ export default {
   border: 1px solid #cdcdcd !important;
   height: auto !important;
   width: 100%;
+}
+.active {
+  color: #fff;
+  background-color: #16b67f !important;
 }
 </style>

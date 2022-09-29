@@ -1,23 +1,33 @@
 <template>
   <div class="my-input">
     <v-text-field
+      @input="updateInput"
+      :value="inputValue"
       single-line
       dense
       height="57"
-      v-maxlen="5"
       hide-details
       type="number"
       @keypress="filterWithoutE"
     ></v-text-field>
-    <div class="mt-8">1 USD = 17.7755 ZAR</div>
+    <div class="mt-8">
+      1 {{ availableCurrency.CharCode }} =
+      {{
+        calculationCourse(1, wantBuyCurrencies, availableCurrency).toFixed(4)
+      }}
+      {{ wantBuyCurrencies.CharCode }}
+    </div>
   </div>
 </template>
 
 <script>
+import { fx } from "money";
+
 export default {
+  props: ["wantBuyCurrencies", "availableCurrency", "changeAvailableCurrency"],
   data() {
     return {
-      str: "",
+      inputValue: "",
     };
   },
   methods: {
@@ -27,6 +37,33 @@ export default {
         evt.preventDefault();
       } else {
         return true;
+      }
+    },
+    updateInput(val) {
+      this.changeAvailableCurrency({
+        inputValue: val,
+      });
+    },
+    calculationCourse(
+      num,
+      availableCurrency = this.availableCurrency,
+      wantBuyCurrencies = this.wantBuyCurrencies
+    ) {
+      return fx.convert(num, {
+        from: availableCurrency.CharCode,
+        to: wantBuyCurrencies.CharCode,
+      });
+    },
+  },
+  watch: {
+    wantBuyCurrencies(newVal) {
+      const correctNumber = this.calculationCourse(newVal.inputValue);
+      const expression = Math.abs(
+        Number.parseFloat(correctNumber) -
+          Number.parseFloat(this.inputValue === "" ? 0 : this.inputValue)
+      );
+      if (expression > 0.0005) {
+        this.inputValue = correctNumber !== 0 ? correctNumber : "";
       }
     },
   },

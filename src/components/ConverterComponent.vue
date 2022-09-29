@@ -1,20 +1,31 @@
 <template>
   <div class="converter-wrap d-flex flex-column">
-    <span class="my-3">{{ title }}</span>
+    <span class="my-3">{{ title ?? "Валюта" }}</span>
     <div class="btn__wrapper">
       <my-btn
         v-for="currency in popularCurrencies"
-        :nameCurrency="currency.Name"
+        :changeAvailableCurrency="changeAvailableCurrency"
+        :currency="currency"
         :key="currency.ID"
-        >{{ currency.CharCode }}</my-btn
+        :active="availableCurrency.ID === currency.ID"
+      ></my-btn>
+      <my-btn
+        :currency="defaultLastCurrencie"
+        :changeAvailableCurrency="changeAvailableCurrency"
+        :active="defaultLastCurrencie.ID === availableCurrency.ID"
+        >{{ defaultLastCurrencie.CharCode }}</my-btn
       >
       <v-menu offset-y>
         <template v-slot:activator="{ on, attrs }">
           <v-btn depressed color="white" v-bind="attrs" v-on="on">↓</v-btn>
         </template>
         <v-list class="list-wrap px-4">
-          <v-list-item v-for="currency in allCurrencies" :key="currency.ID">
-            <v-tooltip top v-if="currency.Name.length > 30">
+          <v-list-item
+            v-for="currency in allCurrencies"
+            :key="currency.ID"
+            @click="listCurrencyClick(currency)"
+          >
+            <v-tooltip top v-if="currency.Name.length > 22">
               <template v-slot:activator="{ on, attrs }">
                 <v-list-item-title v-bind="attrs" v-on="on">{{
                   currency.Name
@@ -27,28 +38,55 @@
         </v-list>
       </v-menu>
     </div>
-    <my-input class="my-6"></my-input>
+    <my-input
+      :wantBuyCurrencies="wantBuyCurrencies"
+      :availableCurrency="availableCurrency"
+      :changeAvailableCurrency="changeAvailableCurrency"
+      class="my-6"
+    ></my-input>
   </div>
 </template>
 
 <script>
 import MyBtn from "@/components/MyBtn.vue";
 import MyInput from "@/components/MyInput.vue";
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 
 export default {
-  props: ["title"],
+  props: [
+    "title",
+    "availableCurrency",
+    "changeAvailableCurrency",
+    "wantBuyCurrencies",
+  ],
   components: {
     MyBtn,
     MyInput,
   },
   data() {
-    return {};
+    return {
+      defaultLastCurrencie: {},
+    };
+  },
+  methods: {
+    listCurrencyClick(currency) {
+      this.defaultLastCurrencie = currency;
+      this.changeAvailableCurrency(currency);
+    },
   },
   computed: {
+    ...mapState(["currencies"]),
     ...mapGetters(["popularCurrencies", "allCurrencies"]),
   },
-  methods: {},
+  watch: {
+    availableCurrency(newvVal) {
+      if (Object.keys(this.defaultLastCurrencie).length === 0) {
+        this.defaultLastCurrencie = this.currencies.find(
+          (el) => el.CharCode === "GBP"
+        );
+      }
+    },
+  },
 };
 </script>
 
@@ -72,7 +110,7 @@ export default {
 }
 .btn__wrapper {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 }
 .v-list-item {
   border-radius: 4px;

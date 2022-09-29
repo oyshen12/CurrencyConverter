@@ -9,8 +9,18 @@
 
     <v-main>
       <div class="d-flex justify-space-between mt-16 converter__wrapper">
-        <converter-component title="У меня есть"></converter-component>
-        <converter-component title="Хочу приобрести"></converter-component>
+        <converter-component
+          title="У меня есть"
+          :availableCurrency="avaibleCurrencies"
+          :wantBuyCurrencies="wantBuyCurrencies"
+          :changeAvailableCurrency="setaAaibleCurrencies"
+        ></converter-component>
+        <converter-component
+          title="Хочу приобрести"
+          :availableCurrency="wantBuyCurrencies"
+          :wantBuyCurrencies="avaibleCurrencies"
+          :changeAvailableCurrency="setwWantBuyCurrencies"
+        ></converter-component>
       </div>
     </v-main>
   </v-app>
@@ -18,7 +28,7 @@
 
 <script>
 import ConverterComponent from "@/components/ConverterComponent.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapState, mapMutations } from "vuex";
 
 export default {
   name: "App",
@@ -29,7 +39,11 @@ export default {
     //
   }),
   methods: {
+    ...mapMutations(["setaAaibleCurrencies", "setwWantBuyCurrencies"]),
     ...mapActions(["downloadCurrencies"]),
+  },
+  computed: {
+    ...mapState(["avaibleCurrencies", "wantBuyCurrencies"]),
   },
 
   mounted() {
