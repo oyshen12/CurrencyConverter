@@ -98,6 +98,14 @@ export default {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
 }
+@media (max-width: 930px) {
+  .list-wrap {
+    grid-template-columns: 1fr;
+    border: 1px solid #cdcdcd;
+    padding: 0;
+    margin: 200px 16px 8px 16px;
+  }
+}
 .v-list-item {
   cursor: pointer;
   width: 245px;

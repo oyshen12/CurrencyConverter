@@ -2,19 +2,20 @@
   <v-app class="app__wrapper">
     <v-app-bar app color="primary" dark>
       <div class="d-flex align-center">
-        <span class="text-h3">Currency Converter</span>
+        <span class="header__title">Currency Converter</span>
       </div>
       <v-spacer></v-spacer>
     </v-app-bar>
 
     <v-main>
-      <div class="d-flex justify-space-between mt-16 converter__wrapper">
+      <div class="converter__wrapper">
         <converter-component
           title="У меня есть"
           :availableCurrency="avaibleCurrencies"
           :wantBuyCurrencies="wantBuyCurrencies"
           :changeAvailableCurrency="setaAaibleCurrencies"
         ></converter-component>
+        <div class="converter-arrows"></div>
         <converter-component
           title="Хочу приобрести"
           :availableCurrency="wantBuyCurrencies"
@@ -57,8 +58,34 @@ export default {
   justify-content: center !important;
 }
 .converter__wrapper {
+  display: flex;
   max-width: 930px;
   width: 100%;
+  justify-content: space-between;
+  height: 303px;
+  align-items: center;
+  margin-top: 64px;
+}
+.converter-arrows {
+  width: 50px;
+  height: 50px;
+  background: url("@/assets/transfer-svgrepo-com.svg") no-repeat 50%;
+  background-size: 50px;
+  margin: 0 auto;
+  margin-top: 50px;
+}
+@media (max-width: 930px) {
+  .converter__wrapper {
+    flex-direction: column;
+    align-items: center;
+    justify-content: unset;
+    height: auto;
+    margin-top: 24px;
+  }
+  .converter-arrows {
+    transform: rotate(90deg);
+    margin: 0;
+  }
 }
 .v-main__wrap {
   display: flex;
@@ -69,5 +96,8 @@ export default {
   left: auto !important;
   max-width: 930px;
   width: 100%;
+}
+.header__title {
+  font-size: 24px;
 }
 </style>
