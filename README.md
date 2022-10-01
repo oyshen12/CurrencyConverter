@@ -1,4 +1,4 @@
-# currencyconverter
+# Конвертер валют 
 
 ## Project setup
 ```
