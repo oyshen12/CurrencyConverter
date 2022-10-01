@@ -1,5 +1,7 @@
 # Конвертер валют 
 
+Проект доступен на GitHub Pages: https://oyshen12.github.io/CurrencyConverter/
+
 ## Project setup
 ```
 npm install
