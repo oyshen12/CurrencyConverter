@@ -8,6 +8,7 @@
       height="57"
       hide-details
       type="number"
+      :key="inputController"
       @keypress="filterWithoutE"
     ></v-text-field>
     <div class="mt-8">
@@ -31,12 +32,18 @@ export default {
     "value",
   ],
   data() {
-    return {};
+    return {
+      inputController: 0,
+    };
   },
   inject: ["calculationCourse", "readbleNumber"],
   methods: {
     inputChange(value) {
-      this.$emit("input", value);
+      if (value.length < 11) {
+        this.$emit("input", value);
+      } else {
+        this.inputController += 1;
+      }
     },
     filterWithoutE(evt) {
       let expect = evt.target.value.toString() + evt.key.toString();
