@@ -10,7 +10,7 @@
         v-bind="attrs"
         v-on="on"
         class="py-3"
-        @click="changeAvailableCurrency(currency)"
+        @click="changeAvailableCurrency(currency, true)"
       >
         {{ currency.CharCode }}
       </v-btn>

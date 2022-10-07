@@ -4,14 +4,14 @@
     <div class="btn__wrapper">
       <my-btn
         v-for="currency in popularCurrencies"
-        :changeAvailableCurrency="changeAvailableCurrency"
+        :changeAvailableCurrency="listCurrencyClick"
         :currency="currency"
         :key="currency.ID"
         :active="availableCurrency.ID === currency.ID"
       ></my-btn>
       <my-btn
         :currency="defaultLastCurrencie"
-        :changeAvailableCurrency="changeAvailableCurrency"
+        :changeAvailableCurrency="listCurrencyClick"
         :active="defaultLastCurrencie.ID === availableCurrency.ID"
         >{{ defaultLastCurrencie.CharCode }}</my-btn
       >
@@ -42,6 +42,7 @@
       :wantBuyCurrencies="wantBuyCurrencies"
       :availableCurrency="availableCurrency"
       :changeAvailableCurrency="changeAvailableCurrency"
+      v-model="inputValue"
       class="my-6"
     ></my-input>
   </div>
@@ -51,6 +52,7 @@
 import MyBtn from "@/components/MyBtn.vue";
 import MyInput from "@/components/MyInput.vue";
 import { mapGetters, mapState } from "vuex";
+import { fx } from "money";
 
 export default {
   props: [
@@ -58,6 +60,7 @@ export default {
     "availableCurrency",
     "changeAvailableCurrency",
     "wantBuyCurrencies",
+    "main",
   ],
   components: {
     MyBtn,
@@ -66,17 +69,50 @@ export default {
   data() {
     return {
       defaultLastCurrencie: {},
+      inputValue: "",
+      colorBtn: "white",
     };
   },
   methods: {
-    listCurrencyClick(currency) {
-      this.defaultLastCurrencie = currency;
+    listCurrencyClick(currency, popular = false) {
+      if (!this.main) {
+        currency.currencyChange = true;
+        const value = this.calculationCourse(
+          this.wantBuyCurrencies.inputValue,
+          currency,
+          this.wantBuyCurrencies
+        );
+        this.inputValue = value ? this.readbleNumber(value) : "";
+      }
+      if (!popular) {
+        this.defaultLastCurrencie = currency;
+      }
       this.changeAvailableCurrency(currency);
+    },
+    calculationCourse(
+      num,
+      availableCurrency = this.availableCurrency,
+      wantBuyCurrencies = this.wantBuyCurrencies
+    ) {
+      let result = fx.convert(num, {
+        from: availableCurrency.CharCode,
+        to: wantBuyCurrencies.CharCode,
+      });
+      return isNaN(result) ? "" : result;
+    },
+    readbleNumber(num) {
+      return Number.isInteger(num) ? num : num.toFixed(4);
     },
   },
   computed: {
     ...mapState(["currencies"]),
     ...mapGetters(["popularCurrencies", "allCurrencies"]),
+  },
+  provide: function () {
+    return {
+      calculationCourse: this.calculationCourse,
+      readbleNumber: this.readbleNumber,
+    };
   },
   watch: {
     availableCurrency(newvVal) {
@@ -85,6 +121,29 @@ export default {
           (el) => el.CharCode === "GBP"
         );
       }
+    },
+    wantBuyCurrencies(newVal) {
+      if (this.main && newVal.currencyChange) {
+        return;
+      }
+      const correctNumber = this.calculationCourse(newVal.inputValue);
+      const expression = Math.abs(
+        Number.parseFloat(correctNumber) -
+          Number.parseFloat(this.inputValue === "" ? 0 : this.inputValue)
+      );
+      if (expression > 0.005) {
+        this.inputValue =
+          correctNumber !== 0 ? this.readbleNumber(correctNumber) : "";
+      }
+    },
+    inputValue(newVal) {
+      if (!this.main && this.currencyChange) {
+        this.currencyChange = false;
+        return;
+      }
+      this.changeAvailableCurrency({
+        inputValue: newVal,
+      });
     },
   },
 };

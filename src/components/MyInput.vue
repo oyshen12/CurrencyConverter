@@ -1,7 +1,8 @@
 <template>
   <div class="my-input">
     <v-text-field
-      v-model="inputValue"
+      :value="value"
+      @input="inputChange"
       single-line
       dense
       height="57"
@@ -22,16 +23,21 @@
 </template>
 
 <script>
-import { fx } from "money";
-
 export default {
-  props: ["wantBuyCurrencies", "availableCurrency", "changeAvailableCurrency"],
+  props: [
+    "wantBuyCurrencies",
+    "availableCurrency",
+    "changeAvailableCurrency",
+    "value",
+  ],
   data() {
-    return {
-      inputValue: "",
-    };
+    return {};
   },
+  inject: ["calculationCourse", "readbleNumber"],
   methods: {
+    inputChange(value) {
+      this.$emit("input", value);
+    },
     filterWithoutE(evt) {
       let expect = evt.target.value.toString() + evt.key.toString();
       if (!/^[-+]?[0-9]*\.?[0-9]*$/.test(expect)) {
@@ -40,44 +46,8 @@ export default {
         return true;
       }
     },
-    readbleNumber(num) {
-      return Number.isInteger(num) ? num : num.toFixed(4);
-    },
-    calculationCourse(
-      num,
-      availableCurrency = this.availableCurrency,
-      wantBuyCurrencies = this.wantBuyCurrencies
-    ) {
-      return fx.convert(num, {
-        from: availableCurrency.CharCode,
-        to: wantBuyCurrencies.CharCode,
-      });
-    },
   },
-  watch: {
-    wantBuyCurrencies(newVal) {
-      const correctNumber = this.calculationCourse(newVal.inputValue);
-      const expression = Math.abs(
-        Number.parseFloat(correctNumber) -
-          Number.parseFloat(this.inputValue === "" ? 0 : this.inputValue)
-      );
-      if (expression > 0.005) {
-        this.inputValue =
-          correctNumber !== 0 ? this.readbleNumber(correctNumber) : "";
-      }
-    },
-    inputValue(newVal) {
-      if (newVal.length > 9) {
-        this.$nextTick(() => {
-          this.inputValue = this.inputValue.slice(0, 9);
-        });
-      } else {
-        this.changeAvailableCurrency({
-          inputValue: newVal,
-        });
-      }
-    },
-  },
+  watch: {},
 };
 </script>
 

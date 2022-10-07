@@ -14,6 +14,7 @@
           :availableCurrency="avaibleCurrencies"
           :wantBuyCurrencies="wantBuyCurrencies"
           :changeAvailableCurrency="setaAaibleCurrencies"
+          :main="true"
         ></converter-component>
         <div class="converter-arrows"></div>
         <converter-component
