@@ -25,12 +25,7 @@
 
 <script>
 export default {
-  props: [
-    "wantBuyCurrencies",
-    "availableCurrency",
-    "changeAvailableCurrency",
-    "value",
-  ],
+  props: ["wantBuyCurrencies", "availableCurrency", "value"],
   data() {
     return {
       inputController: 0,

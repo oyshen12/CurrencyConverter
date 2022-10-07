@@ -71,12 +71,14 @@ export default {
       defaultLastCurrencie: {},
       inputValue: "",
       colorBtn: "white",
+      currencyChange: false,
     };
   },
   methods: {
     listCurrencyClick(currency, popular = false) {
       if (!this.main) {
         currency.currencyChange = true;
+        this.currencyChange = true;
         const value = this.calculationCourse(
           this.wantBuyCurrencies.inputValue,
           currency,
@@ -143,6 +145,7 @@ export default {
       }
       this.changeAvailableCurrency({
         inputValue: newVal,
+        currencyChange: false,
       });
     },
   },
