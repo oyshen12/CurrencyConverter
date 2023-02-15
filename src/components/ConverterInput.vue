@@ -3,12 +3,13 @@
     <v-text-field
       :value="value"
       @input="inputChange"
+      ref="convertInput"
       single-line
       dense
       height="57"
       hide-details
       type="number"
-      :key="inputController"
+      :key="inputKey"
       @keypress="filterWithoutE"
     ></v-text-field>
     <div class="mt-8">
@@ -28,7 +29,7 @@ export default {
   props: ["wantBuyCurrencies", "availableCurrency", "value"],
   data() {
     return {
-      inputController: 0,
+      inputKey: 0,
     };
   },
   inject: ["calculationCourse", "readbleNumber"],
@@ -37,7 +38,10 @@ export default {
       if (value.length < 11) {
         this.$emit("input", value);
       } else {
-        this.inputController += 1;
+        this.inputKey++;
+        this.$nextTick(() => {
+          this.$refs.convertInput.focus();
+        });
       }
     },
     filterWithoutE(evt) {
@@ -49,7 +53,6 @@ export default {
       }
     },
   },
-  watch: {},
 };
 </script>
 

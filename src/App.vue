@@ -9,20 +9,20 @@
 
     <v-main>
       <div class="converter__wrapper">
-        <converter-component
+        <ConverterComponent
           title="У меня есть"
           :availableCurrency="avaibleCurrencies"
           :wantBuyCurrencies="wantBuyCurrencies"
           :changeAvailableCurrency="setaAaibleCurrencies"
           :main="true"
-        ></converter-component>
+        />
         <div class="converter-arrows"></div>
-        <converter-component
+        <ConverterComponent
           title="Хочу приобрести"
           :availableCurrency="wantBuyCurrencies"
           :wantBuyCurrencies="avaibleCurrencies"
           :changeAvailableCurrency="setwWantBuyCurrencies"
-        ></converter-component>
+        />
       </div>
     </v-main>
   </v-app>

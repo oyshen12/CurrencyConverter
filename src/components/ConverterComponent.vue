@@ -2,18 +2,18 @@
   <div class="converter-wrap d-flex flex-column">
     <span class="my-3">{{ title ?? "Валюта" }}</span>
     <div class="btn__wrapper">
-      <my-btn
+      <MainBtn
         v-for="currency in popularCurrencies"
         :changeAvailableCurrency="listCurrencyClick"
         :currency="currency"
         :key="currency.ID"
         :active="availableCurrency.ID === currency.ID"
-      ></my-btn>
-      <my-btn
+      />
+      <MainBtn
         :currency="defaultLastCurrencie"
         :changeAvailableCurrency="listCurrencyClick"
         :active="defaultLastCurrencie.ID === availableCurrency.ID"
-        >{{ defaultLastCurrencie.CharCode }}</my-btn
+        >{{ defaultLastCurrencie.CharCode }}</MainBtn
       >
       <v-menu offset-y>
         <template v-slot:activator="{ on, attrs }">
@@ -38,19 +38,19 @@
         </v-list>
       </v-menu>
     </div>
-    <my-input
+    <ConverterInput
       :wantBuyCurrencies="wantBuyCurrencies"
       :availableCurrency="availableCurrency"
       :changeAvailableCurrency="changeAvailableCurrency"
       v-model="inputValue"
       class="my-6"
-    ></my-input>
+    />
   </div>
 </template>
 
 <script>
-import MyBtn from "@/components/MyBtn.vue";
-import MyInput from "@/components/MyInput.vue";
+import MainBtn from "@/components/MainBtn.vue";
+import ConverterInput from "@/components/ConverterInput.vue";
 import { mapGetters, mapState } from "vuex";
 import { fx } from "money";
 
@@ -63,8 +63,8 @@ export default {
     "main",
   ],
   components: {
-    MyBtn,
-    MyInput,
+    MainBtn,
+    ConverterInput,
   },
   data() {
     return {
@@ -96,7 +96,7 @@ export default {
       availableCurrency = this.availableCurrency,
       wantBuyCurrencies = this.wantBuyCurrencies
     ) {
-      let result = fx.convert(num, {
+      const result = fx.convert(num, {
         from: availableCurrency.CharCode,
         to: wantBuyCurrencies.CharCode,
       });

@@ -41,21 +41,25 @@ export default new Vuex.Store({
   actions: {
     async downloadCurrencies({ commit, state }) {
       const link = "https://www.cbr-xml-daily.ru/daily_json.js";
-      const { data } = await axios.get(link);
-      const currenciesObj = data.Valute;
-      const currencies = [];
-      fx.base = "RUR";
-      for (const cur in currenciesObj) {
-        currencies.push({ ...currenciesObj[cur] });
-        fx.rates[cur] = currenciesObj[cur].Value;
+      try {
+        const { data } = await axios.get(link);
+        const currenciesObj = data.Valute;
+        const currencies = [];
+        fx.base = "RUR";
+        for (const cur in currenciesObj) {
+          currencies.push({ ...currenciesObj[cur] });
+          fx.rates[cur] = currenciesObj[cur].Value;
+        }
+        fx.rates["RUR"] = 1;
+        if (Object.keys(state.avaibleCurrencies).length === 0) {
+          const Usd = currencies.find((el) => el.CharCode === "USD");
+          commit("setaAaibleCurrencies", RUB);
+          commit("setwWantBuyCurrencies", Usd);
+        }
+        commit("setCurrencies", currencies);
+      } catch (e) {
+        console.Error(e);
       }
-      fx.rates["RUR"] = 1;
-      if (Object.keys(state.avaibleCurrencies).length === 0) {
-        const Usd = currencies.find((el) => el.CharCode === "USD");
-        commit("setaAaibleCurrencies", RUB);
-        commit("setwWantBuyCurrencies", Usd);
-      }
-      commit("setCurrencies", currencies);
     },
   },
   modules: {},
